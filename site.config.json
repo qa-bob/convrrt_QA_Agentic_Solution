@@ -1,23 +1,27 @@
-﻿{
-    "name":  "Convrrt",
-    "url":  "https://www.convrrt.com",
-    "description":  "",
-    "industry":  "",
-    "hasContactForm":  true,
-    "expectedNavItems":  [
-
-                         ],
-    "viewports":  [
-                      "desktop",
-                      "mobile",
-                      "tablet"
-                  ],
-    "skipVisual":  false,
-    "skipForms":  false,
-    "auth":  {
-                 "required":  false,
-                 "loginUrl":  "",
-                 "username":  "",
-                 "password":  ""
-             }
+{
+  "name": "Convrrt",
+  "url": "https://www.convrrt.com",
+  "description": "The Landing Page Builder Platform for SaaS",
+  "industry": "Technology, Information and Internet",
+  "hasContactForm": true,
+  "expectedNavItems": [
+    "Product",
+    "Use Cases",
+    "Resources",
+    "Pricing",
+    "Schedule demo"
+  ],
+  "viewports": [
+    "desktop",
+    "mobile",
+    "tablet"
+  ],
+  "skipVisual": false,
+  "skipForms": false,
+  "auth": {
+    "required": false,
+    "loginUrl": "",
+    "username": "",
+    "password": ""
+  }
 }

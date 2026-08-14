@@ -10,10 +10,12 @@
  */
 
 import { test as base, expect } from '@playwright/test';
-import { loadSiteConfig, type SiteConfig } from '@types/site-config.types';
+import { loadSiteConfig, type SiteConfig } from '@stypes/site-config.types';
 import { HomePage } from '@pages/home.page';
 import { NavigationPage } from '@pages/navigation.page';
 import { ContactFormPage } from '@pages/contact.page';
+import { FaqPage } from '@pages/faq.page';
+import { PricingPage } from '@pages/pricing.page';
 
 // ── Fixture type definitions ─────────────────────────────────────────────────
 
@@ -26,6 +28,10 @@ export interface Fixtures {
   navigationPage: NavigationPage;
   /** ContactFormPage page object (does not auto-navigate) */
   contactPage: ContactFormPage;
+  /** FaqPage page object (does not auto-navigate) */
+  faqPage: FaqPage;
+  /** PricingPage page object (does not auto-navigate) */
+  pricingPage: PricingPage;
 }
 
 // ── Extended test object ─────────────────────────────────────────────────────
@@ -66,6 +72,24 @@ export const test = base.extend<Fixtures>({
   contactPage: async ({ page, siteConfig }, use) => {
     const contactPage = new ContactFormPage(page, siteConfig);
     await use(contactPage);
+  },
+
+  /**
+   * faqPage — constructs FaqPage without navigating.
+   * Tests should navigate and scroll to the FAQ section first.
+   */
+  faqPage: async ({ page, siteConfig }, use) => {
+    const faqPage = new FaqPage(page, siteConfig);
+    await use(faqPage);
+  },
+
+  /**
+   * pricingPage — constructs PricingPage without navigating.
+   * Call pricingPage.navigateToPricing() in the test or beforeEach.
+   */
+  pricingPage: async ({ page, siteConfig }, use) => {
+    const pricingPage = new PricingPage(page, siteConfig);
+    await use(pricingPage);
   },
 });
 
