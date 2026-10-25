@@ -13,7 +13,7 @@ import { test, expect } from '@fixtures/site.fixture';
 test.describe('Testimonials & Social Proof @functional', () => {
   test.beforeEach(async ({ page, siteConfig }) => {
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
   });
 
   // ── Section presence ────────────────────────────────────────────────────────
@@ -37,8 +37,7 @@ test.describe('Testimonials & Social Proof @functional', () => {
         return;
       }
 
-      console.warn('[functional] No testimonials section found on homepage.');
-      return;
+      test.skip(true, 'No testimonials section found on homepage');
     }
 
     await expect(testimonialSection, 'Testimonials section should be visible').toBeVisible();
@@ -51,10 +50,7 @@ test.describe('Testimonials & Social Proof @functional', () => {
 
     const count = await testimonials.count();
 
-    if (count === 0) {
-      console.warn('[functional] No individual testimonial elements found — pattern may differ.');
-      return;
-    }
+    test.skip(count === 0, 'No individual testimonial elements found — pattern may differ');
 
     expect(
       count,
@@ -68,10 +64,7 @@ test.describe('Testimonials & Social Proof @functional', () => {
     const testimonials = page.locator('[class*="testimonial"], blockquote');
     const count = await testimonials.count();
 
-    if (count === 0) {
-      console.warn('[functional] No testimonials found — skipping quote text check.');
-      return;
-    }
+    test.skip(count === 0, 'No testimonials found');
 
     // Check the first testimonial has meaningful text
     const firstTestimonial = testimonials.first();
@@ -93,10 +86,7 @@ test.describe('Testimonials & Social Proof @functional', () => {
         'blockquote + p, blockquote footer'
     );
 
-    if (await attributionLocator.count() === 0) {
-      console.warn('[functional] No explicit attribution elements found inside testimonials.');
-      return;
-    }
+    test.skip(await attributionLocator.count() === 0, 'No explicit attribution elements found inside testimonials');
 
     const firstAttribution = attributionLocator.first();
     const text = await firstAttribution.textContent();
@@ -136,12 +126,10 @@ test.describe('Testimonials & Social Proof @functional', () => {
       .filter({ hasText: /take our word|trusted by|customers say|testimonials|preferred.*platform/i })
       .first();
 
-    if (await socialProofHeading.count() === 0) {
-      console.warn(
-        '[functional] Social proof heading not found. Section may use a different heading text.'
-      );
-      return;
-    }
+    test.skip(
+      await socialProofHeading.count() === 0,
+      'Social proof heading not found. Section may use a different heading text'
+    );
 
     await expect(socialProofHeading).toBeVisible();
   });

@@ -26,9 +26,11 @@ const DROPDOWNS = [
 ] as const;
 
 test.describe('Dropdown Navigation @functional @navigation', () => {
-  test.beforeEach(async ({ page, siteConfig }) => {
+  test.beforeEach(async ({ page, siteConfig }, testInfo) => {
+    // Desktop dropdown menus — small viewports hide the nav behind a toggle
+    test.skip(testInfo.project.name !== 'chromium-desktop', 'Runs only in the "chromium-desktop" project');
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
     await page.setViewportSize({ width: 1280, height: 720 });
   });
 
@@ -57,10 +59,7 @@ test.describe('Dropdown Navigation @functional @navigation', () => {
       const nav = page.locator('nav, [role="navigation"]').first();
       const trigger = nav.locator('a, button').filter({ hasText: dropdown.label }).first();
 
-      if (await trigger.count() === 0) {
-        console.warn(`[functional] "${dropdown.label}" trigger not found — skipping.`);
-        return;
-      }
+      test.skip(await trigger.count() === 0, `"${dropdown.label}" trigger not found`);
 
       // Hover first (many menus are CSS-hover based)
       await trigger.hover();
@@ -106,10 +105,7 @@ test.describe('Dropdown Navigation @functional @navigation', () => {
       .filter({ hasText: /^pricing$/i })
       .first();
 
-    if (await pricingLink.count() === 0) {
-      console.warn('[functional] Pricing nav link not found.');
-      return;
-    }
+    test.skip(await pricingLink.count() === 0, 'Pricing nav link not found');
 
     await expect(pricingLink).toBeVisible();
     const href = await pricingLink.getAttribute('href');
@@ -125,10 +121,7 @@ test.describe('Dropdown Navigation @functional @navigation', () => {
       .filter({ hasText: /schedule.*demo|book.*demo|get.*demo/i })
       .first();
 
-    if (await scheduleCta.count() === 0) {
-      console.warn('[functional] Schedule demo CTA not found in nav — may use different label.');
-      return;
-    }
+    test.skip(await scheduleCta.count() === 0, 'Schedule demo CTA not found in nav — may use different label');
 
     await expect(scheduleCta, '"Schedule demo" CTA should be visible in the nav').toBeVisible();
   });
