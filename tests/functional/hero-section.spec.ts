@@ -13,7 +13,7 @@ import { test, expect } from '@fixtures/site.fixture';
 test.describe('Homepage Hero Section @functional', () => {
   test.beforeEach(async ({ page, siteConfig }) => {
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
   });
 
   // ── Headings ────────────────────────────────────────────────────────────────
@@ -69,7 +69,8 @@ test.describe('Homepage Hero Section @functional', () => {
     await expect(ctaLocator.first()).toBeVisible();
   });
 
-  test('"Try it free" CTA is visible on desktop @functional', async ({ page }) => {
+  test('"Try it free" CTA is visible on desktop @functional', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium-desktop', 'Runs only in the "chromium-desktop" project');
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto((await page.evaluate(() => window.location.href)), {
       waitUntil: 'domcontentloaded',
@@ -77,10 +78,7 @@ test.describe('Homepage Hero Section @functional', () => {
 
     const tryFreeBtn = page.locator('a, button').filter({ hasText: /try.*free/i }).first();
 
-    if (await tryFreeBtn.count() === 0) {
-      console.warn('[functional] "Try it free" button not found — CTA text may have changed.');
-      return;
-    }
+    test.skip(await tryFreeBtn.count() === 0, '"Try it free" button not found — CTA text may have changed');
 
     await expect(tryFreeBtn, '"Try it free" button should be visible').toBeVisible();
   });
@@ -91,10 +89,7 @@ test.describe('Homepage Hero Section @functional', () => {
       .filter({ hasText: /demo|product tour/i })
       .first();
 
-    if (await demoCta.count() === 0) {
-      console.warn('[functional] No demo CTA found — may have changed label.');
-      return;
-    }
+    test.skip(await demoCta.count() === 0, 'No demo CTA found — may have changed label');
 
     await expect(demoCta).toBeVisible();
   });

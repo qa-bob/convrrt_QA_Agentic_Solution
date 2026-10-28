@@ -14,7 +14,7 @@ import { FaqPage } from '@pages/faq.page';
 test.describe('FAQ Accordion @functional', () => {
   test.beforeEach(async ({ page, siteConfig }) => {
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
   });
 
   // ── Section presence ────────────────────────────────────────────────────────
@@ -35,10 +35,7 @@ test.describe('FAQ Accordion @functional', () => {
 
     const count = await faqPage.getFaqCount();
 
-    if (count === 0) {
-      console.warn('[functional] No FAQ triggers found — accordion may use a non-standard pattern.');
-      return;
-    }
+    test.skip(count === 0, 'No FAQ triggers found — accordion may use a non-standard pattern');
 
     expect(
       count,
@@ -57,10 +54,7 @@ test.describe('FAQ Accordion @functional', () => {
 
     const triggers = await faqPage.getFaqTriggers();
 
-    if (triggers.length === 0) {
-      console.warn('[functional] No FAQ triggers found — skipping expand test.');
-      return;
-    }
+    test.skip(triggers.length === 0, 'No FAQ triggers found');
 
     // Click the first FAQ item
     await faqPage.clickFaqItem(0);
@@ -98,10 +92,7 @@ test.describe('FAQ Accordion @functional', () => {
 
     const triggers = await faqPage.getFaqTriggers();
 
-    if (triggers.length === 0) {
-      console.warn('[functional] No FAQ triggers found — skipping content check.');
-      return;
-    }
+    test.skip(triggers.length === 0, 'No FAQ triggers found');
 
     // Collect question text from all triggers
     const questionTexts: string[] = [];

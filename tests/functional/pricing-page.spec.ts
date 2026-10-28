@@ -15,7 +15,7 @@ test.describe('Pricing Page @functional', () => {
   test.beforeEach(async ({ page, siteConfig }) => {
     const pricingPage = new PricingPage(page, siteConfig);
     await pricingPage.navigateToPricing();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
   });
 
   // ── Page load ───────────────────────────────────────────────────────────────

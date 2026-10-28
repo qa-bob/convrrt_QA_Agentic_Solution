@@ -15,7 +15,7 @@ test.describe('Cookie Consent Banner @functional', () => {
     // Use a fresh context with no prior cookies/storage
     await page.context().clearCookies();
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Common cookie banner patterns
     const bannerLocator = page.locator(
@@ -24,14 +24,11 @@ test.describe('Cookie Consent Banner @functional', () => {
         '[aria-label*="cookie" i], [aria-label*="consent" i]'
     ).first();
 
-    if (await bannerLocator.count() === 0) {
-      // Site may not have a banner, or it may use a third-party widget not in DOM yet
-      console.warn(
-        '[functional] Cookie consent banner not found with standard selectors. ' +
-          'The banner may be loaded asynchronously or via a third-party script.'
-      );
-      return;
-    }
+    // Site may not have a banner, or it may use a third-party widget not in DOM yet
+    test.skip(
+      await bannerLocator.count() === 0,
+      'Cookie consent banner not found with standard selectors (may load asynchronously or via a third-party script)'
+    );
 
     await expect(bannerLocator, 'Cookie consent banner should be visible on first visit').toBeVisible();
   });
@@ -39,17 +36,14 @@ test.describe('Cookie Consent Banner @functional', () => {
   test('cookie banner has an accept button @functional', async ({ page, siteConfig }) => {
     await page.context().clearCookies();
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     const acceptButton = page
       .locator('button')
       .filter({ hasText: /accept|allow|agree|got it|ok/i })
       .first();
 
-    if (await acceptButton.count() === 0) {
-      console.warn('[functional] No cookie accept button found — banner may not be present.');
-      return;
-    }
+    test.skip(await acceptButton.count() === 0, 'No cookie accept button found — banner may not be present');
 
     await expect(acceptButton, 'Cookie accept button should be visible').toBeVisible();
   });
@@ -57,27 +51,24 @@ test.describe('Cookie Consent Banner @functional', () => {
   test('clicking accept dismisses the cookie banner @functional', async ({ page, siteConfig }) => {
     await page.context().clearCookies();
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     const bannerLocator = page.locator(
       '[class*="cookie"], [class*="consent"], [class*="gdpr"], ' +
         '[id*="cookie"], [id*="consent"]'
     ).first();
 
-    if (await bannerLocator.count() === 0 || !(await bannerLocator.isVisible())) {
-      console.warn('[functional] Cookie banner not visible — skipping dismiss test.');
-      return;
-    }
+    test.skip(
+      await bannerLocator.count() === 0 || !(await bannerLocator.isVisible()),
+      'Cookie banner not visible'
+    );
 
     const acceptButton = page
       .locator('button')
       .filter({ hasText: /accept|allow|agree|got it|ok/i })
       .first();
 
-    if (await acceptButton.count() === 0) {
-      console.warn('[functional] No accept button found in cookie banner.');
-      return;
-    }
+    test.skip(await acceptButton.count() === 0, 'No accept button found in cookie banner');
 
     await acceptButton.click();
 
@@ -91,16 +82,13 @@ test.describe('Cookie Consent Banner @functional', () => {
   test('cookie banner has a dismiss or reject option @functional', async ({ page, siteConfig }) => {
     await page.context().clearCookies();
     await page.goto(siteConfig.url, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     const bannerLocator = page.locator(
       '[class*="cookie"], [class*="consent"], [class*="gdpr"]'
     ).first();
 
-    if (await bannerLocator.count() === 0) {
-      console.warn('[functional] Cookie banner not found — skipping reject option test.');
-      return;
-    }
+    test.skip(await bannerLocator.count() === 0, 'Cookie banner not found');
 
     // Check for dismiss/reject/decline option (GDPR compliance)
     const rejectButton = page
